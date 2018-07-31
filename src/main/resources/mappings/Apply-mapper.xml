@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.numberONe.mapper.ApplyMapper">
+<sql id="selectId">
+		id id,
+		matterId matterId,
+		themeApplyId themeApplyId,
+		statusDate statusDate,
+		createDate createDate,
+		status status		
+	</sql>
+	
+	<!-- <insert id="addMatterTheme" parameterType="com.numberONe.entity.MatterThemeFormMap">
+		insert into matter_theme
+		(id,
+		 userIdMade,
+		 matterThemeCode,
+		 matterThemeName,
+		 matterThemeType,
+		 matterId,
+		 themeAddress,
+		invest invest,
+		 moneyResource,
+		 isImport,
+		 landCharac,
+		 mainLandContent,
+		 statusDate,
+		 createDate,
+		 status)
+		values 
+		(
+		#{id},
+		#{userIdMade},
+		#{matterThemeCode},
+		#{matterThemeName},
+		#{matterThemeType},
+		#{matterId},
+		#{themeAddress},
+		#{moneyResource},
+		#{isImport},
+		#{landCharac},
+		#{mainLandContent},
+		#{statusDate},
+		#{createDate},
+		#{status}
+		)
+	</insert> -->
+	
+	<!-- <select id="findmatterThemePage" resultType="com.numberONe.entity.MatterThemeFormMap" parameterType="java.util.Map">
+		SELECT
+		<include refid="selectId"></include>
+		from matter_theme
+		where 
+			1=1
+		<if test="matterThemeName!=null and matterThemeName != ''" >
+			and matterThemeName like '%${matterThemeName}%' 
+		</if>
+		<if test="status!=null and status!=''">
+			and status = '${status}'
+		</if>
+		<if test="column != null">
+          order by ${column} ${sort}
+        </if>
+	</select>
+	
+	<insert id="addMatterTheme" parameterType="com.numberONe.entity.MatterThemeFormMap">
+		insert into matter_theme
+		(id,
+		 userIdMade,
+		 matterThemeCode,
+		 matterThemeName,
+		 matterThemeType,
+		 matterId,
+		 themeAddress,
+		invest invest,
+		 moneyResource,
+		 isImport,
+		 landCharac,
+		 mainLandContent,
+		 statusDate,
+		 createDate,
+		 status)
+		values 
+		(
+		#{id},
+		#{userIdMade},
+		#{matterThemeCode},
+		#{matterThemeName},
+		#{matterThemeType},
+		#{matterId},
+		#{themeAddress},
+		#{moneyResource},
+		#{isImport},
+		#{landCharac},
+		#{mainLandContent},
+		#{statusDate},
+		#{createDate},
+		#{status}
+		)
+	</insert> -->
+
+
+</mapper>
