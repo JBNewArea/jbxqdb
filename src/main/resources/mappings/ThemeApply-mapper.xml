@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.numberONe.mapper.ThemeApplyMapper">
+<sql id="selectId">
+		t.id id,
+ t.matterThemeId matterThemeId,
+ (select x.matterThemeName from matter_theme x where x.id = t.matterThemeId) matterThemeName,
+t.applicationName applicationName,
+t.applicantDocumentType applicantDocumentType,
+t.applicationDocumentNumber applicationDocumentNumber,
+t.applicationPhone applicationPhone, 
+t.applicationPostCode applicationPostCode,
+t.applicationAddress applicationAddress,
+t.legalRepresentative legalRepresentative,
+t.createDate createDate,
+t.statusDate statusDate,
+t.agentId agentId,
+t.status status,
+t.mainLandContent mainLandContent,
+t.isImport isImport,
+t.moneyResource moneyResource,
+t.invest invest,
+t.themeAddress themeAddress,
+t.name name,
+(select u.userName from ly_user u where u.id=t.agentId) agentName,
+
+t.xzq xzq,
+t.dbzxName dbzxName,
+t.qyTime qyTime,
+t.xieyihao xieyihao ,
+t.bumen bumen,
+t.personOne personOne,
+t.personTwo personTwo,
+t.daibanStyle daibanStyle,
+t.weituoStart weituoStart,
+t.weituoEnd weituoEnd,
+t.danweiPlace danweiPlace,
+t.danweiStyle danweiStyle,
+t.projectPerson projectPerson,
+t.personPosition personPosition,
+t.personPhone personPhone,
+t.youxiang youxiang,
+
+t.matterThemeCode matterThemeCode,
+t.matterThemeType matterThemeType,
+t.landCharac landCharac,
+t.yongdi yongdi,
+t.whatNow whatNow,
+t.zongjianzhu zongjianzhu,
+t.yuanqu yuanqu
+
+		
+	</sql>
+	
+	<select id="findById" parameterType="com.numberONe.entity.ThemeApplyFormMap" resultType="com.numberONe.entity.ThemeApplyFormMap">
+		SELECT
+		<include refid="selectId"></include>,m.status matterStatus
+		from theme_apply t
+		inner join matter_theme m on m.id = t.matterThemeId
+		where t.id = #{id}
+	</select>
+	
+	<insert id="addMatterTheme" parameterType="com.numberONe.entity.MatterThemeFormMap">
+		insert into matter_theme
+		(id,
+		 userIdMade,
+		 matterThemeCode,
+		 matterThemeType,
+		 matterId,
+		 themeAddress,
+		invest invest,
+		 moneyResource,
+		 isImport,
+		 landCharac,
+		 mainLandContent,
+		 statusDate,
+		 createDate,
+		 status,
+<!-- xzq,
+dbzxName,
+qyTime,
+xieyihao ,
+bumen,
+personOne,
+personTwo,
+daibanStyle,
+weituoStart,
+weituoEnd,
+danweiPlace,
+danweiStyle,
+projectPerson,
+personPosition,
+personPhone,
+youxiang,
+
+matterThemeCode ,
+matterThemeType ,
+landCharac ,
+yongdi ,
+whatNow ,
+zongjianzhu ,
+yuanqu  -->
+			 
+		 )
+		values 
+		(
+		#{id},
+		#{userIdMade},
+		#{matterThemeCode},
+		#{matterThemeType},
+		#{matterId},
+		#{themeAddress},
+		#{moneyResource},
+		#{isImport},
+		#{landCharac},
+		#{mainLandContent},
+		#{statusDate},
+		#{createDate},
+		#{status},
+<!-- #{xzq},
+#{dbzxName},
+#{qyTime},
+#{xieyihao},
+#{bumen},
+#{personOne},
+#{personTwo},
+#{daibanStyle},
+#{weituoStart},
+#{weituoEnd},
+#{danweiPlace},
+#{danweiStyle},
+#{projectPerson},
+#{personPosition},
+#{personPhone},	
+#{youxiang},
+
+#{matterThemeCode},
+#{matterThemeType},
+#{landCharac},
+#{yongdi},
+#{whatNow},
+#{zongjianzhu},
+#{yuanqu} -->
+
+		)
+	</insert>
+	
+	<select id="findThemeApplyPage" resultType="com.numberONe.entity.ThemeApplyFormMap" parameterType="java.util.Map">
+		SELECT
+		<include refid="selectId"></include>,m.status matterStatus,(select group_concat(r.name) from ly_role r where r.id in(
+			select ur.roleId from ly_user_role ur where ur.userId = t.agentId
+		)) roleName
+		from theme_apply t
+		inner join matter_theme m on m.id = t.matterThemeId
+		where 
+			1=1
+		<if test="name!=null and name != ''" >
+			and (t.name like '%${name}%' or t.matterThemeCode like '%${name}%')
+		</if>
+		<if test="matterThemeName!=null and matterThemeName!=''">
+			and t.matterThemeId in(select m.id from matter_theme m where m.matterThemeName like '%${matterThemeName}%'  ) 
+		</if>
+		<if test="status!=null and status!=''">
+			and t.status = '${status}'
+		</if>
+		<if test="agentName!=null and agentName!=''">
+			and t.agentId in (select u.id from ly_user u where u.userName like '%${agentName}%')
+		</if>
+		<if test="column != null">
+          order by ${column} ${sort}
+        </if>
+	</select>
+	
+	<!-- <select id="findmatterThemePage" resultType="com.numberONe.entity.MatterThemeFormMap" parameterType="java.util.Map">
+		SELECT
+		<include refid="selectId"></include>
+		from matter_theme
+		where 
+			1=1
+		<if test="matterThemeName!=null and matterThemeName != ''" >
+			and matterThemeName like '%${matterThemeName}%' 
+		</if>
+		<if test="status!=null and status!=''">
+			and status = '${status}'
+		</if>
+		<if test="column != null">
+          order by ${column} ${sort}
+        </if>
+	</select>
+	
+	<insert id="addMatterTheme" parameterType="com.numberONe.entity.MatterThemeFormMap">
+		insert into matter_theme
+		(id,
+		 userIdMade,
+		 matterThemeCode,
+		 matterThemeName,
+		 matterThemeType,
+		 matterId,
+		 themeAddress,
+		invest invest,
+		 moneyResource,
+		 isImport,
+		 landCharac,
+		 mainLandContent,
+		 statusDate,
+		 createDate,
+		 status)
+		values 
+		(
+		#{id},
+		#{userIdMade},
+		#{matterThemeCode},
+		#{matterThemeName},
+		#{matterThemeType},
+		#{matterId},
+		#{themeAddress},
+		#{moneyResource},
+		#{isImport},
+		#{landCharac},
+		#{mainLandContent},
+		#{statusDate},
+		#{createDate},
+		#{status}
+		)
+	</insert> -->
+	
+	<select id="getzhexianData" resultType="com.numberONe.entity.monthData">
+		SELECT 
+SUM(CASE WHEN MONTH(t.createDate) =1 THEN 1 ELSE 0 END) january,   
+SUM(CASE WHEN MONTH(t.createDate) =2 THEN 1 ELSE 0 END) february,
+SUM(CASE WHEN MONTH(t.createDate) =3 THEN 1 ELSE 0 END) march,
+SUM(CASE WHEN MONTH(t.createDate) =4 THEN 1 ELSE 0 END) april,
+SUM(CASE WHEN MONTH(t.createDate) =5 THEN 1 ELSE 0 END) may,
+SUM(CASE WHEN MONTH(t.createDate) =6 THEN 1 ELSE 0 END) june,
+SUM(CASE WHEN MONTH(t.createDate) =7 THEN 1 ELSE 0 END) july,
+SUM(CASE WHEN MONTH(t.createDate) =8 THEN 1 ELSE 0 END) august,
+SUM(CASE WHEN MONTH(t.createDate) =9 THEN 1 ELSE 0 END) september,
+SUM(CASE WHEN MONTH(t.createDate) =10 THEN 1 ELSE 0 END) october,
+SUM(CASE WHEN MONTH(t.createDate) =11 THEN 1 ELSE 0 END) november,
+SUM(CASE WHEN MONTH(t.createDate) =12 THEN 1 ELSE 0 END) december
+    FROM theme_apply t
+	where year(t.createDate) = #{year} 
+	<if test="status!=null and status!=''">
+		and t.status = #{status}
+	</if>
+	<if test="agentId!=null and agentId!=''">
+		and t.agentId in (select ur.userId from ly_user_role ur where ur.roleId = #{agentId})
+	</if>
+	</select>
+	
+	<select id="findbanjian" resultType="Integer">
+		select count(*) from theme_apply where status=#{status}
+	</select>
+	
+
+	<select id="findmoney" resultType="Double">
+		select IFNULL(sum(invest),0) from theme_apply
+	</select>
+	
+	<select id="echartsmatterThemeType" resultType="com.numberONe.entity.echartsData">
+		select t.matterThemeType as name,count(t.matterThemeType) as value from theme_apply t
+		inner join matter_theme m on m.id = t.matterThemeId
+		where 1=1
+		<if test="year!=null and year!=''">
+			and	year(t.createDate) = #{year}
+		</if>
+		group by t.matterThemeType
+	</select>
+	
+	<select id="echartsisImport" resultType="com.numberONe.entity.echartsData">
+		select isImport as name,count(isImport) as value from theme_apply 
+		where 1=1
+		<if test="year!=null and year!=''">
+			and	year(createDate) = #{year}
+		</if>
+		group by isImport
+	</select>
+	
+	<select id="echartsmoneyResource" resultType="com.numberONe.entity.echartsData">
+		select moneyResource as name,count(moneyResource) as value from theme_apply
+		where 1=1
+		<if test="year!=null and year!=''">
+			and	year(createDate) = #{year} 
+		</if>
+		group by moneyResource
+	</select>
+	
+	<select id="echartslandCharac" resultType="com.numberONe.entity.echartsData">
+		select t.landCharac as name , count(t.landCharac) as value from theme_apply t
+		inner join matter_theme m on t.matterThemeId = m.id
+		where 1=1
+		<if test="year!=null and year!=''">
+			and	year(t.createDate) = #{year}
+		</if>
+		group by t.landCharac
+	</select>
+</mapper>

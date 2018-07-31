@@ -1,0 +1,146 @@
+/* 删除 */
+.shanchu-title{
+	width: 100%;
+	height: 50px;
+	background: url(../images/top.png) 0 0 no-repeat;
+	color: white;
+	text-indent: 20px;
+	line-height: 50px;
+	font-size: 16px;
+}
+.shanchu-neirong{
+	width: 100%;
+	height: 155px;
+	overflow:hidden;
+}
+.shanchu-neirong img{
+	display: block;
+	width: 48px;
+	height: 48px;
+	margin: 48px 0 0 87px;
+	float: left;
+}
+.shanchu-neirong span{
+	display: block;
+	float: left;
+	margin: 66px 0 0 14px;
+	font-size: 15px;
+
+}
+.shanchu-btn{
+	width: 100%;
+	height: 54px;
+	border-top: 1px solid #ebebeb;
+}
+.shanchu-btn button{
+	width: 70px 32px;
+	border: none;
+	outline: none;
+	background:  #2185ca;
+	border-radius: 3px;
+	color: white;
+	padding: 10px 21px;
+	font-size: 14px;
+	margin: 10px 0 0 316px;
+}
+
+
+
+
+
+
+/* 告知单 */
+.gaozhi{
+	width: 100%;
+	height: 50px;
+	background: url(../images/top-1.png) 0 0 no-repeat;
+	color: white;
+	text-indent: 20px;
+	line-height: 50px;
+	font-size: 16px;
+}
+.gz-tab{
+	width: 1020px;
+	height: 600px;
+	margin:20px auto;
+}
+.gz-tab table{
+	width: 1018px;
+	border-color: #dbdcdd;
+	border-collapse: collapse; 
+}
+.gz-tab table thead tr{
+	height: 50px;
+}
+.gz-tab table thead tr td{
+	font-size: 18px;
+	color: #1876b5;
+	text-align: center;	
+}
+.gz-tab table tbody tr{
+	height: 40px;
+}
+.gz-tab table tbody tr td:nth-child(1){
+	color: #333333;
+	font-size: 16px;
+	background: #eff0f4;
+	width: 10%;
+}
+.gz-tab table tbody tr td:nth-child(2){
+	color:#666666;
+	font-size: 16px;
+	text-indent:2em;
+	width: 20%;
+}
+.gz-tab table tbody tr td:nth-child(3){
+	color: #333333;
+	font-size: 16px;
+	background: #eff0f4;
+	width: 10%;
+}
+.gz-tab table tbody tr td:nth-child(4){
+	color:#666666;
+	font-size: 16px;
+	width: 60%;
+}
+.gz-tab table tbody tr td:nth-child(2) p{
+	line-height: 20px;
+}
+.caozuo{
+	margin-left: 80%;
+}
+.caozuo button:nth-child(1){
+	width: 68px;
+	height: 28px;
+	border: solid 1px #999999;
+	border-radius: 3px;
+	color: #666666;
+	line-height: 20px;
+	text-align: center;
+	font-size: 14px;
+	outline: none;
+	background: white;
+}
+.caozuo button:nth-child(2){
+	width: 70px;
+	height: 30px;
+	border-radius: 3px;
+	color: #ffffff;
+	line-height: 20px;
+	text-align: center;
+	font-size: 14px;
+	background:  #2185ca;
+	outline: none;
+	border: none;
+}
+.layui-layer-max cite{
+	background: white;
+}
+.layui-layer-min cite{
+	background: white;
+}
+
+
+
+
+/* 网上申请 */

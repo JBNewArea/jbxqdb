@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.numberONe.mapper.MatterThemeMapper">
+<sql id="selectId">
+		id id,
+		userIdMade userIdMade,
+		matterThemeCode matterThemeCode,
+		matterThemeName matterThemeName,
+		matterThemeType matterThemeType,
+		matterId matterId,
+		landCharac landCharac,
+		statusDate statusDate,
+		createDate createDate,
+		status status,
+		(select u.userName from ly_user u where u.id=matter_theme.userIdMade) userNameMade
+	</sql>
+	
+	<select id="findmatterThemePage" resultType="com.numberONe.entity.MatterThemeFormMap" parameterType="java.util.Map">
+		SELECT
+		<include refid="selectId"></include>
+		from matter_theme
+		where 
+			1=1
+		<if test="matterThemeName!=null and matterThemeName != ''" >
+			and matterThemeName like '%${matterThemeName}%' 
+		</if>
+		<if test="status!=null and status!=''">
+			and status = '${status}'
+		</if>
+		<if test="column != null">
+          order by ${column} ${sort}
+        </if>
+	</select>
+	
+	<insert id="addMatterTheme" parameterType="com.numberONe.entity.MatterThemeFormMap">
+		insert into matter_theme
+		(id,
+		 userIdMade,
+		 matterThemeCode,
+		 matterThemeName,
+		 matterThemeType,
+		 matterId,
+		 landCharac,
+		 statusDate,
+		 createDate,
+		 status)
+		values 
+		(
+		#{id},
+		#{userIdMade},
+		#{matterThemeCode},
+		#{matterThemeName},
+		#{matterThemeType},
+		#{matterId},
+		#{landCharac},
+		#{statusDate},
+		#{createDate},
+		#{status}
+		)
+	</insert>
+
+
+<!-- 
+<resultMap id="BaseResultMap" type="com.db.core.business.po.MatterThemePo" >
+        <id column="matter_theme_id" property="matterThemeId" jdbcType="VARCHAR" />
+        <result column="matter_theme_code" property="matterThemeCode" jdbcType="VARCHAR" />
+        <result column="matter_theme_name" property="matterThemeName" jdbcType="VARCHAR" />
+        <result column="matter_theme_type" property="matterThemeType" jdbcType="VARCHAR" />
+        <result column="matter_id" property="matterId" jdbcType="VARCHAR" />
+        <result column="theme_address" property="themeAddress" jdbcType="VARCHAR" />
+        <result column="invest" property="invest" jdbcType="VARCHAR" />
+        <result column="money_resource" property="moneyResource" jdbcType="VARCHAR" />
+        <result column="is_import" property="isImport" jdbcType="VARCHAR" />
+        <result column="land_charac" property="landCharac" jdbcType="VARCHAR" />
+        <result column="main_landContent" property="mainLandContent" jdbcType="VARCHAR" />
+        <result column="status_date" property="statusDate" jdbcType="TIMESTAMP" />
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+        <result column="status" property="status" jdbcType="VARCHAR" />
+    </resultMap>
+
+	<sql id="Base_Column_List">
+		matter_theme_id matterThemeId,matter_theme_code matterThemeCode,matter_theme_name matterThemeName,matter_theme_type matterThemeType,
+		matter_id matterId,theme_address themeAddress,invest invest,money_resource moneyResource,
+		is_import isImport,land_charac landCharac,main_landContent mainLandContent,
+		status_date statusDate,create_date createDate
+	</sql>
+	<select id="selectAllByPage" resultType="com.db.core.business.vo.MatterThemeVo" parameterType="com.db.core.business.vo.MatterThemeVo">
+			select <include refid="Base_Column_List"/> from matter_theme WHERE 1=1
+			<if test="matterThemeName!=null">
+				and matter_theme_name like concat('%',#{matterThemeName},'%')
+			</if>
+			<if test="matterThemeCode!=null">
+				and matter_theme_code like concat('%',#{matterThemeCode},'%')
+			</if>
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+			order by create_date desc
+	</select>
+	<select id="selectMatterThemeById" resultType="com.db.core.business.vo.MatterThemeVo" parameterType="com.db.core.business.vo.MatterThemeVo">
+			select <include refid="Base_Column_List"/> from matter_theme WHERE 1=1
+			<if test="matterThemeId!=null">
+				and matter_theme_id = #{matterThemeId}
+			</if>
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+	</select>
+	<insert id="insertMatterTheme" parameterType="com.db.core.business.vo.MatterThemeVo">
+			insert into matter_theme(matter_theme_id ,
+matter_theme_code  ,
+matter_theme_name,
+matter_theme_type,
+matter_id,
+theme_address,
+invest,
+money_resource,
+is_import,
+land_charac,
+main_landContent,
+status_date,
+create_date,
+status) 
+		values (
+			#{matterThemeId},#{matterThemeCode},#{matterThemeName},#{matterThemeType},#{matterId},#{themeAddress},#{invest}
+			,#{moneyResource},#{isImport},#{landCharac},#{mainLandContent},#{statusDate},#{createDate},#{status}
+		)
+	</insert>
+	<update id="updateMatterThemeByVo" parameterType="com.db.core.business.vo.MatterThemeVo">
+		update matter_theme 
+		<set>
+			<if test="matterThemeName!=null">
+				matter_theme_name=#{matterThemeName},
+			</if>
+			<if test="matterThemeCode!=null">
+				matter_theme_code=#{matterThemeCode},
+			</if>
+			<if test="matterThemeType!=null">
+				matter_theme_type=#{matterThemeType},
+			</if>
+			<if test="matterId!=null">
+				matter_id=#{matterId},
+			</if>
+			<if test="themeAddress!=null">
+				theme_address=#{themeAddress},
+			</if>
+			<if test="invest!=null">
+				invest=#{invest},
+			</if>
+			<if test="moneyResource!=null">
+				money_resource=#{moneyResource},
+			</if>
+			<if test="isImport!=null">
+				is_import=#{isImport},
+			</if>
+			<if test="landCharac!=null">
+				land_charac=#{landCharac},
+			</if>
+			<if test="mainLandContent!=null">
+				main_landContent=#{mainLandContent},
+			</if>
+			<if test="statusDate!=null">
+				status_date=#{statusDate},
+			</if>
+			<if test="status!=null">
+				status=#{status},
+			</if>
+		</set>
+		where matter_theme_id=#{matterThemeId}
+	</update>
+	<update id="deleteMatterThemeByVo" parameterType="com.db.core.business.vo.MatterThemeVo">
+		update matter_theme 
+		<set>
+			<if test="statusDate!=null">
+				status_date=#{statusDate},
+			</if>
+			<if test="status!=null">
+				status=#{status},
+			</if>
+		</set>
+		where matter_theme_id=#{matterThemeId}
+	</update> -->
+</mapper>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd   
+    http://www.springframework.org/schema/context   
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+	default-lazy-init="true">
+	
+	<bean id="credentialsMatcher"
+		class="com.numberONe.shiro.credentials.RetryLimitHashedCredentialsMatcher">
+		<!-- hashAlgorithmName必须的，没有默认值。可以有MD5或者SHA-1，如果对密码安全有更高要求可以用SHA-256或者更高。
+		这里使用MD5 storedCredentialsHexEncoded默认是true，此时用的是密码加密用的是Hex编码；false时用Base64编码 
+		hashIterations迭代次数，默认值是1。 -->
+		<constructor-arg ref="cacheManager" />
+		<property name="hashAlgorithmName" value="md5" />
+		<property name="hashIterations" value="2" />
+		<property name="storedCredentialsHexEncoded" value="true" />
+	</bean>
+	<!-- 凭证匹配器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- 通过登录页面登录的   realm -->
+		<!-- <property name="realm" ref="myRealm" /> -->
+		<!-- 通过单点登录登录的   realm -->
+		<property name="realm" ref="casRealm" />
+		<property name="subjectFactory" ref="casSubjectFactory"></property>
+		<property name="sessionManager" ref="sessionManager"/>
+		<!-- 使用下面配置的缓存管理器 -->
+		<property name="cacheManager" ref="cacheManager" />
+	</bean>
+	
+	<!-- 陶杰 cas  开始  ########################################################################-->
+		<bean id="casSubjectFactory" class="org.apache.shiro.cas.CasSubjectFactory"></bean>
+		<!-- shiro-cas登录过滤器 -->
+	    <bean id="casFilter" class="org.apache.shiro.cas.CasFilter">
+	    
+	        <!-- 配置验证错误时的失败页面 ，这里配置为登录页面 -->
+	        <property name="failureUrl" value="http://221.226.86.27:8080/cas/login?service=http://127.0.0.1:8080/jbxqdb/auth.shtml" />
+	   		<!-- 单点登录 用户信息验证成功后跳转回当前代办系统的地址，此处是通过后台映射index.shtml跳转首页index.jsp -->
+	   		<property name="successUrl" value="http://127.0.0.1:8080/jbxqdb/index.shtml" />
+	    
+	    </bean>
+	    <!-- 退出登录过滤器 -->
+	    <bean id="logout" class="org.apache.shiro.web.filter.authc.LogoutFilter">
+	        <property name="redirectUrl" value="http://221.226.86.27:8080/cas/logout?service=http://127.0.0.1:8080/jbxqdb" />
+	    </bean>
+		<!-- 自定义casRealm -->
+	    <bean id="casRealm" class="com.numberONe.shiro.MyCasRealm">
+	    	<!-- <property name="credentialsMatcher" ref="credentialsMatcher" /> -->
+	    	<property name="cachingEnabled" value="false" />
+	        <!-- <property name="defaultRoles" value="ROLE_USER" /> -->
+	        <!-- 配置cas服务器地址 -->
+	        <property name="casServerUrlPrefix" value="http://221.226.86.27:8080/cas" />
+	        <!-- 客户端的回调地址设置，必须和上面的shiro-cas过滤器casFilter拦截的地址一致 -->
+	        <property name="casService" value="http://127.0.0.1:8080/jbxqdb/auth.shtml" />
+	    </bean>
+	<!-- 陶杰 cas 结束  ########################################################################-->
+	
+	
+	<!--自定义Realm -->
+	<bean id="myRealm" class="com.numberONe.shiro.MyRealm">
+		<property name="credentialsMatcher" ref="credentialsMatcher" />
+		<property name="cachingEnabled" value="false" />
+		<!-- 如需要自定义缓存时间放开以下.修改 ehcache.xml-->
+		<!-- <property name="authenticationCachingEnabled" value="true"/>
+        <property name="authenticationCacheName" value="authenticationCache"/>
+        <property name="authorizationCachingEnabled" value="true"/>
+        <property name="authorizationCacheName" value="authorizationCache"/> -->
+	</bean>
+	
+     <bean id="sysUserFilter" class="com.numberONe.shiro.filter.SysUserFilter"/>
+    
+    
+	 <bean id="kickoutSessionControlFilter" class="com.numberONe.shiro.filter.KickoutSessionControlFilter">
+        <property name="cacheManager" ref="cacheManager"/>
+        <property name="sessionManager" ref="sessionManager"/>
+
+        <property name="kickoutAfter" value="false"/>
+        <property name="maxSession" value="1"/>
+        <property name="kickoutUrl" value="/login.shtml"/>
+    </bean>
+    
+    
+	<!-- 配置shiro的过滤器工厂类，id- shiroFilter要和我们在web.xml中配置的过滤器一致 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		
+		<!-- 通过登录页面登录的属性注入，注入登录和登录成功的首页页面 -->
+		<!-- <property name="loginUrl" value="/login.shtml" />
+		<property name="successUrl" value="/index.shtml" /> -->
+		
+		<!-- 通过单点登录登录的属性注入，注入登录后跳转的cas服务器地址带service参数，此处的successurl不知道用处 -->
+		<property name="loginUrl" value="http://221.226.86.27:8080/cas/login?service=http://127.0.0.1:8080/jbxqdb/auth.shtml" />
+		<property name="successUrl" value="/index.shtml" />
+		
+		<property name="unauthorizedUrl" value="/denied.jsp" />
+		<!-- 自定义权限配置 -->
+		<property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
+		<property name="filters">
+            <util:map>
+            	<!-- 通过登录页面登录的过滤器装配 -->
+                <!-- <entry key="sysUser" value-ref="sysUserFilter"/>
+                <entry key="kickout" value-ref="kickoutSessionControlFilter"/> -->
+                
+                <!-- 通过单点登录登录的过滤器装配 -->
+                <entry key="casFilter" value-ref="casFilter" />
+                <entry key="logout" value-ref="logout"/>
+            </util:map>
+        </property>
+	</bean>
+	<!--自定义filterChainDefinitionMap -->
+	<bean id="chainDefinitionSectionMetaSource" class="com.numberONe.shiro.ChainDefinitionSectionMetaSource">
+		<property name="filterChainDefinitions">
+			<value>
+			/auth.shtml = casFilter
+			<!-- 此处加上会导致有些静态资源加载不了，前台样式会丢失，不可加 -->
+			<!-- /** = authc -->
+			/favicon.ico = anon
+    		/admin_files/** = anon
+    		/fonts/** = anon
+    		/404/** = anon
+    		/error.jsp = anon
+    		/js/** = anon
+    		/layer-v1.9.2/** = anon
+    		/notebook/** = anon
+    		/login.shtml = anon
+			/denied.jsp = anon
+			/install.shtml = anon
+			/numberONe.shtml = anon
+			/css/** = anon
+			/css/img/** = anon
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
+	
+	 <!-- 会话DAO -->
+    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+        <property name="activeSessionsCacheName" value="shiro-activeSessionCache"/>
+        <property name="sessionIdGenerator" ref="sessionIdGenerator"/>
+    </bean>
+
+    <!-- 会话验证调度器 -->
+     <!-- 全局的会话信息检测扫描信息间隔30分钟-->
+    <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.quartz.QuartzSessionValidationScheduler">
+        <property name="sessionValidationInterval" value="1800000"/>
+        <property name="sessionManager" ref="sessionManager"/>
+    </bean>
+	
+	 <!-- 会话管理器 -->
+	  <!-- 全局的会话信息设置成30分钟,sessionValidationSchedulerEnabled参数就是是否开启扫描  -->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <property name="globalSessionTimeout" value="1800000"/>
+        <property name="deleteInvalidSessions" value="true"/>
+        <property name="sessionValidationSchedulerEnabled" value="true"/>
+        <property name="sessionValidationScheduler" ref="sessionValidationScheduler"/>
+        <property name="sessionDAO" ref="sessionDAO"/>
+    </bean>
+	
+	
+	<!--shiro缓存管理器 -->
+	<bean id="cacheManager" class="com.numberONe.shiro.spring.SpringCacheManagerWrapper" >
+	<property name="cacheManager" ref="springCacheManager"/>
+	</bean>
+	
+	 <bean id="springCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="cacheManager" ref="ehcacheManager"/>
+    </bean>
+
+    <!--ehcache-->
+    <bean id="ehcacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation" value="classpath:ehcache.xml"/>
+    </bean>
+	
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+	
+	<bean  
+        class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">  
+        <property name="staticMethod"  
+            value="org.apache.shiro.SecurityUtils.setSecurityManager" />  
+        <property name="arguments" ref="securityManager" />  
+    </bean>  
+</beans>

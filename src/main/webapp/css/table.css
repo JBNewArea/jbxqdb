@@ -1,0 +1,107 @@
+/* table统一样式 */
+
+.el{
+	width: 100%;
+	border-collapse:collapse;
+	border: 1px solid  #e6e6e6;
+}
+.el tr td:nth-child(1){
+	width: 5%;
+	color: #333333;
+	background: #eff0f4;
+	text-align: right;
+}
+.el tr td:nth-child(2){
+	width: 95%;
+	color: #666666;
+}
+.sl{
+	width: 100%;
+	border-collapse:collapse;
+	border: 1px solid  #e6e6e6;
+}
+
+.sl tr td:nth-child(1){
+	width: 10%;
+	color: #333333;
+	background: #eff0f4;
+	text-align: right;
+}
+.sl tr td:nth-child(2){
+	width: 40%;
+	color: #666666;
+}
+.sl tr td:nth-child(3){
+	width: 10%;
+	color: #333333;
+	background: #eff0f4;
+	text-align: right;
+}
+.sl tr td:nth-child(4){
+	width: 40%;
+	color: #666666;
+}
+.ssl{
+	width: 100%;
+	border-collapse:collapse;
+	border: 1px solid  #e6e6e6;
+}
+
+.ssl tr td:nth-child(1){
+	width: 33%;
+	color: #666666;
+}
+.ssl tr td:nth-child(2){
+	width: 33%;
+	color: #666666;
+}
+.ssl tr td:nth-child(3){
+	width: 33%;
+	color: #666666;
+}
+.ll{
+	width: 100%;
+	border-collapse:collapse;
+	border: 1px solid  #e6e6e6;
+}
+.ll tr td:nth-child(1){
+	width: 10%;
+	color: #333333;
+	background: #eff0f4;
+	text-align: right;
+}
+.ll tr td:nth-child(2){
+	width: 23%;
+	color: #666666;
+}
+.ll tr td:nth-child(3){
+	width: 10%;
+	color: #333333;
+	background: #eff0f4;
+	text-align: right;
+}
+.ll tr td:nth-child(4){
+	width: 23%;
+	color: #666666;
+}
+.ll tr td:nth-child(5){
+	width: 10%;
+	color: #333333;
+	background: #eff0f4;
+	text-align: right;
+}
+.ll tr td:nth-child(6){
+	width: 23%;
+	color: #666666;
+}
+.ll tr td
+table tr td input{
+	outline: none;
+	border: none;
+}
+table tr td select{
+	background:  #eff0f4;
+	border-radius: 2px;
+	border: solid 1px #dbdcdd;
+}
+
